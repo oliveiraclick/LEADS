@@ -249,11 +249,16 @@ const App: React.FC = () => {
 
           processedBairros.push(barrio);
         } catch (err: any) {
-          if (err.message?.includes('429')) {
+          const msg = err.message || "";
+          if (msg.includes('429')) {
             setErrorMessage("Cota diária do Google atingida. Mineramos até onde foi possível. Tente novamente em 1 hora para pegar o restante dos bairros.");
             break;
+          } else if (msg.includes('API_KEY_MISSING')) {
+            setErrorMessage("Erro: API Key não configurada. Vá na aba Configurações e insira sua chave do Google Gemini.");
+            break;
           } else {
-            setErrorMessage("Ocorreu um erro inesperado. Verifique sua conexão.");
+            console.error("Mining Error:", err);
+            setErrorMessage("Ocorreu um erro inesperado. Verifique sua conexão e sua chave de API.");
           }
         }
       }
