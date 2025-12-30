@@ -223,7 +223,7 @@ const App: React.FC = () => {
           // Pequena pausa antes de cada busca para evitar 429
           await new Promise(r => setTimeout(r, 2000));
 
-          const result = await searchBusinesses(niche, city, barrio, true);
+          const result = await searchBusinesses(niche, city, barrio, true, undefined, geminiApiKey);
           const batchToSave: any[] = [];
 
           if (result.sources) allSources.push(...result.sources);
@@ -288,7 +288,7 @@ const App: React.FC = () => {
     if (!city) return;
     setLoadingNeighborhoods(true);
     try {
-      const list = await fetchNeighborhoods(city);
+      const list = await fetchNeighborhoods(city, geminiApiKey);
       if (list && list.length > 0) {
         setNeighborhoodsList(list);
         setErrorMessage(null);
@@ -323,7 +323,7 @@ const App: React.FC = () => {
         const { generatePitchWithGroq } = await import('./services/groq');
         pitch = await generatePitchWithGroq(currentNiche, lead.name);
       } else {
-        pitch = await generatePitch(currentNiche, lead.name);
+        pitch = await generatePitch(currentNiche, lead.name, geminiApiKey);
       }
 
       const updatedLead = { ...lead, notes: pitch };

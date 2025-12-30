@@ -5,7 +5,8 @@ import { SearchResult, BusinessInfo, GroundingSource } from "../types";
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
 // Helper to get API Key defensively
-const getApiKey = () => {
+const getApiKey = (explicitKey?: string) => {
+  if (explicitKey) return explicitKey;
   const browserKey = (typeof window !== 'undefined') ? ((window as any).__LP_GEMINI_API_KEY || localStorage.getItem('LP_GEMINI_API_KEY')) : '';
   return browserKey || import.meta.env.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : '');
 };
@@ -32,14 +33,14 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 2): Promise<T> {
 
 import { neighborhoodsByCity, getStaticNeighborhoods } from "./staticData";
 
-export const fetchNeighborhoods = async (city: string): Promise<string[]> => {
+export const fetchNeighborhoods = async (city: string, apiKey?: string): Promise<string[]> => {
   // Try static data first for speed and reliable fallback
   const staticList = getStaticNeighborhoods(city);
   if (staticList) return staticList;
 
   return withRetry(async () => {
     // Re-initialize for each call as per guidelines
-    const key = getApiKey();
+    const key = getApiKey(apiKey);
     if (!key) throw new Error("API_KEY_MISSING");
     const ai = new GoogleGenAI({ apiKey: key });
     const prompt = `Liste os 20 principais bairros da cidade de "${city}". Retorne apenas um array JSON de strings com os nomes dos bairros.`;
@@ -63,10 +64,10 @@ export const fetchNeighborhoods = async (city: string): Promise<string[]> => {
   });
 };
 
-export const generatePitch = async (niche: string, businessName: string): Promise<string> => {
+export const generatePitch = async (niche: string, businessName: string, apiKey?: string): Promise<string> => {
   return withRetry(async () => {
     // Re-initialize for each call as per guidelines
-    const key = getApiKey();
+    const key = getApiKey(apiKey);
     if (!key) throw new Error("API_KEY_MISSING");
     const ai = new GoogleGenAI({ apiKey: key });
     const prompt = `Crie uma abordagem de vendas curta e persuasiva para o WhatsApp. 
@@ -93,11 +94,12 @@ export const searchBusinesses = async (
   city: string,
   neighborhood: string,
   deepSearch: boolean = false,
-  location?: { latitude: number; longitude: number }
+  location?: { latitude: number; longitude: number },
+  apiKey?: string
 ): Promise<SearchResult> => {
   return withRetry(async () => {
     // Re-initialize for each call as per guidelines
-    const key = getApiKey();
+    const key = getApiKey(apiKey);
     if (!key) throw new Error("API_KEY_MISSING");
     const ai = new GoogleGenAI({ apiKey: key });
     const tools: any[] = [{ googleMaps: {} }];
