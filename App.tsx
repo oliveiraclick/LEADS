@@ -468,6 +468,34 @@ const App: React.FC = () => {
     }
   };
 
+  const handleSaveKeys = () => {
+    try {
+      const gKey = geminiApiKey.trim();
+      const grKey = groqApiKey.trim();
+
+      if (!gKey && !grKey) {
+        alert("Por favor, insira pelo menos uma chave de API.");
+        return;
+      }
+
+      if (gKey) {
+        localStorage.setItem('LP_GEMINI_API_KEY', gKey);
+        (window as any).__LP_GEMINI_API_KEY = gKey;
+      }
+      if (grKey) {
+        localStorage.setItem('LP_GROQ_API_KEY', grKey);
+      }
+
+      setApiKeySaved(true);
+      alert("Chaves Salvas via Bootloader! Vamos testar a conexão.");
+      setActiveTab('mine');
+      setTimeout(() => setApiKeySaved(false), 2000);
+
+    } catch (err: any) {
+      alert("Erro crítico de armazenamento: " + (err.message || "Seu navegador móvel pode estar bloqueando cookies (Modo Privado?)."));
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen pb-32">
       <header className="p-6 safe-top flex justify-between items-center sticky top-0 bg-[#0B0F1A]/80 backdrop-blur-lg z-40">
@@ -837,16 +865,10 @@ const App: React.FC = () => {
             </div>
 
             <button
-              onClick={() => {
-                localStorage.setItem('LP_GEMINI_API_KEY', geminiApiKey);
-                localStorage.setItem('LP_GROQ_API_KEY', groqApiKey);
-                (window as any).__LP_GEMINI_API_KEY = geminiApiKey;
-                setApiKeySaved(true);
-                setTimeout(() => setApiKeySaved(false), 2000);
-              }}
-              className={`w-full py-5 rounded-full font-black text-xs uppercase transition-all ${apiKeySaved ? 'bg-emerald-500 text-white' : 'bg-indigo-600'}`}
+              onClick={handleSaveKeys}
+              className={`w-full py-5 rounded-full font-black text-xs uppercase transition-all shadow-xl active:scale-95 ${apiKeySaved ? 'bg-emerald-500 text-white' : 'bg-indigo-600'}`}
             >
-              {apiKeySaved ? 'Todas as Chaves Salvas!' : 'Salvar Configurações'}
+              {apiKeySaved ? 'Salvo! Redirecionando...' : 'Salvar e Testar Agora'}
             </button>
 
             <div className="glass-card p-6 rounded-[2.5rem] space-y-6">
