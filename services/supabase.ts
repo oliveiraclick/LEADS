@@ -33,12 +33,18 @@ export const saveCampaignToCloud = async (campaign: any) => {
 // Helper para deletar campanha
 export const deleteCampaignFromCloud = async (id: string) => {
   try {
-    const { error } = await supabase
-      .from('campaigns')
-      .delete()
-      .eq('id', id);
-    if (error) throw error;
+    await supabase.from('campaigns').delete().eq('id', id);
+    await supabase.from('leads').delete().eq('campaignId', id);
   } catch (e) {
-    console.error("Erro ao deletar na nuvem:", e);
+    console.error("Erro ao deletar campanha na nuvem:", e);
+  }
+};
+
+// Helper para deletar um único lead
+export const deleteLeadFromCloud = async (id: string, campaignId: string) => {
+  try {
+    await supabase.from('leads').delete().match({ id, campaignId });
+  } catch (e) {
+    console.error("Erro ao deletar lead na nuvem:", e);
   }
 };

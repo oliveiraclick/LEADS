@@ -1,11 +1,12 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>LeadPro Hub</title>
-    
+
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0B0F1A">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,51 +17,89 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --bg-dark: #0B0F1A;
             --card-dark: #151B2C;
             --accent-indigo: #6366F1;
         }
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
             -webkit-tap-highlight-color: transparent;
             background-color: var(--bg-dark);
             color: white;
             overflow-x: hidden;
             margin: 0;
         }
+
         /* Safe areas for iOS */
-        .safe-top { padding-top: env(safe-area-inset-top); }
-        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
-        
-        .glass { 
-            background: rgba(21, 27, 44, 0.7); 
-            backdrop-filter: blur(16px); 
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255,255,255,0.08); 
-        }
-        
-        .glass-card {
-            background: linear-gradient(145deg, rgba(21, 27, 44, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        .safe-top {
+            padding-top: env(safe-area-inset-top);
         }
 
-        .active-tab { color: var(--accent-indigo); }
-        
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 10px; }
-        
-        input::placeholder { color: #475569; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+        .safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
         }
-        .animate-fadeIn { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
+
+        .glass {
+            background: rgba(21, 27, 44, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: linear-gradient(145deg, rgba(21, 27, 44, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .active-tab {
+            color: var(--accent-indigo);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 10px;
+        }
+
+        input::placeholder {
+            color: #475569;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
         /* Layout profissional: Gradient backgrounds */
         .bg-glow-top {
             position: fixed;
@@ -73,20 +112,8 @@
             pointer-events: none;
         }
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
-    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.39.7",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
-  }
-}
-</script>
-</head>
-<body class="selection:bg-indigo-500/30">
-    <div class="bg-glow-top"></div>
     <div id="root"></div>
-</body>
+    <script type="module" src="/index.tsx"></script>
+    </body>
+
 </html>
