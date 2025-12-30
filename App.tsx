@@ -80,8 +80,9 @@ const App: React.FC = () => {
             ...l,
             campaignId: leadRemapping[l.campaignId] || l.campaignId
           }));
-          // Cleanup cloud duplicates in background
-          campaignsToRemove.forEach(id => deleteCampaignFromCloud(id));
+          // Cleanup cloud duplicates and save merged associations
+          await Promise.all(campaignsToRemove.map(id => deleteCampaignFromCloud(id)));
+          await saveLeadsToCloud(rawLeads);
         }
 
         const uniqueLeads = Array.from(new Map(rawLeads.map(l => [`${l.id}_${l.campaignId}`, l])).values());
