@@ -550,6 +550,15 @@ const App: React.FC = () => {
         {activeTab === 'mine' && (
           <div className="space-y-8">
             <h2 className="text-2xl font-black text-white">Mineração</h2>
+
+            {/* DEBUG: API Key Status Indicator */}
+            <div className={`p-3 rounded-2xl border flex items-center justify-between ${geminiApiKey ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-red-500/10 border-red-500/20'}`}>
+              <span className="text-[10px] font-black uppercase text-slate-400">Status da Chave Gemini</span>
+              <span className={`text-[10px] font-black uppercase ${geminiApiKey ? 'text-emerald-400' : 'text-red-400'}`}>
+                {geminiApiKey ? 'OK - Conectado' : 'Não Configurada'}
+              </span>
+            </div>
+
             <form onSubmit={handleStartMining} className="space-y-6">
               <div className="glass-card p-6 rounded-[2.5rem] space-y-4">
                 <input type="text" value={niche} onChange={e => setNiche(e.target.value)} placeholder="O que busca? (ex: Academia)" className="w-full bg-slate-900 border-none p-4 rounded-xl text-white font-bold" />
@@ -573,8 +582,14 @@ const App: React.FC = () => {
                   ))}
                 </div>
               )}
-              <button disabled={isMining || selectedNeighborhoods.length === 0} className="w-full py-5 bg-indigo-600 rounded-full font-black text-xs uppercase shadow-xl flex items-center justify-center space-x-3 active:scale-95 disabled:opacity-50 transition-all">
-                {isMining ? <><div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div><span>Extraindo...</span></> : <span>Iniciar Extração</span>}
+              <button disabled={isMining || selectedNeighborhoods.length === 0 || !geminiApiKey} className="w-full py-5 bg-indigo-600 rounded-full font-black text-xs uppercase shadow-xl flex items-center justify-center space-x-3 active:scale-95 disabled:opacity-50 disabled:grayscale transition-all">
+                {isMining ? (
+                  <><div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div><span>Extraindo...</span></>
+                ) : !geminiApiKey ? (
+                  <span>Configure a API Key Primeiro</span>
+                ) : (
+                  <span>Iniciar Extração</span>
+                )}
               </button>
             </form>
             {isMining && (
