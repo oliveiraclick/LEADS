@@ -424,7 +424,7 @@ const App: React.FC = () => {
   };
 
   // Fixed missing performExport function
-  const performExport = (scope: 'current' | 'all', format: 'whatsapp' | 'csv', filter: 'all' | 'mobile' = 'all') => {
+  const performExport = (scope: 'current' | 'all', format: 'whatsapp' | 'csv' | 'vcf', filter: 'all' | 'mobile' = 'all') => {
     let list = scope === 'current' ? filteredLeads : leads;
 
     if (filter === 'mobile') {
@@ -462,6 +462,32 @@ const App: React.FC = () => {
       const link = document.createElement("a");
       link.setAttribute("href", url);
       link.setAttribute("download", `leads_${filter === 'mobile' ? 'whats_' : ''}${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setShowExportMenu(false);
+    } else if (format === 'vcf') {
+      // VCF Export Logic
+      const vcardContent = list.map(l => {
+        const cleanPhone = l.phone.replace(/\D/g, '');
+        // Ensure +55 for Brazil if missing (heuristic)
+        const formattedPhone = cleanPhone.startsWith('55') ? '+' + cleanPhone : '+55' + cleanPhone;
+
+        return [
+          'BEGIN:VCARD',
+          'VERSION:3.0',
+          `FN:LP ${l.name}`,
+          `NOTE:Nicho: ${l.niche || 'Geral'} | Bairro: ${l.neighborhood}`,
+          `TEL;TYPE=CELL:${formattedPhone}`,
+          'END:VCARD'
+        ].join('\n');
+      }).join('\n');
+
+      const blob = new Blob([vcardContent], { type: 'text/vcard;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `contatos_leads_${new Date().toISOString().slice(0, 10)}.vcf`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -925,6 +951,16 @@ const App: React.FC = () => {
                 </div>
                 <div className="bg-[#25D366] p-1.5 rounded-lg">
                   <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.185-.573c.948.517 2.042.827 3.144.828 3.182 0 5.767-2.587 5.768-5.767 0-3.18-2.585-5.766-5.766-5.766zm3.361 8.249c-.14.394-.716.711-1.18.755-.464.045-1.055.247-2.311-.274-1.256-.522-2.37-1.854-2.839-2.483-.178-.239-.739-.984-.739-1.879 0-.895.467-1.334.633-1.52.166-.187.365-.234.482-.234s.233.003.334.007c.101.004.237-.038.371.286.134.324.457 1.111.497 1.191.04.081.067.175.013.284-.054.108-.081.175-.162.27-.081.095-.171.21-.244.284-.081.081-.166.17-.071.332.095.162.423.699.907 1.13.623.555 1.148.727 1.31.81.162.083.256.068.351-.041.095-.108.406-.475.514-.637.108-.162.216-.135.365-.081.148.054.919.434 1.081.514.162.081.27.122.311.19.04.068.04.393-.101.787z" /></svg>
+                </div>
+              </button>
+
+              <button onClick={() => performExport('current', 'vcf', 'mobile')} className="w-full p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-left flex justify-between items-center group active:scale-95 transition-all">
+                <div>
+                  <p className="text-xs font-black text-white">Salvar na Agenda (VCF)</p>
+                  <p className="text-[8px] text-slate-500 font-bold uppercase mt-1">Importação Automática</p>
+                </div>
+                <div className="bg-amber-500 p-1.5 rounded-lg text-white">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" /></svg>
                 </div>
               </button>
 
