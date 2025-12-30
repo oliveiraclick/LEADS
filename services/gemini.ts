@@ -81,10 +81,11 @@ export const generatePitch = async (niche: string, businessName: string): Promis
   });
 };
 
-const createNormalizedId = (name: string, phone: string) => {
-  const cleanName = name.toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 15);
-  const cleanPhone = phone.replace(/\D/g, '').slice(-8);
-  return `${cleanName}_${cleanPhone}`;
+const createNormalizedId = (name: string, phone: string, neighborhood: string) => {
+  const cleanName = (name || '').toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 15);
+  const cleanPhone = (phone || '').replace(/\D/g, '').slice(-8);
+  const cleanNeighborhood = (neighborhood || '').toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 10);
+  return `${cleanName}_${cleanNeighborhood}_${cleanPhone}`;
 };
 
 export const searchBusinesses = async (
@@ -138,8 +139,8 @@ export const searchBusinesses = async (
       const instagram = block.match(/INSTAGRAM:\s*(.+)/i)?.[1]?.trim();
       const website = block.match(/WEBSITE:\s*(.+)/i)?.[1]?.trim();
 
-      if (name && rawPhone && rawPhone.length >= 10) {
-        const bizId = createNormalizedId(name, rawPhone);
+      if (name) {
+        const bizId = createNormalizedId(name, rawPhone, neighborhood);
         const isMobile = rawPhone.length === 11 && (rawPhone[2] === '9' || rawPhone[2] === '8');
         businesses.push({
           id: bizId,

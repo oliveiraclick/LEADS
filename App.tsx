@@ -54,8 +54,20 @@ const App: React.FC = () => {
       try {
         const { data: cData } = await supabase.from('campaigns').select('*').order('createdAt', { ascending: true });
         const { data: lData } = await supabase.from('leads').select('*');
-        if (cData) rawCampaigns = cData;
-        if (lData) rawLeads = lData;
+
+        // MERGE LOCAL + CLOUD
+        if (cData) {
+          const cMap = new Map<string, Campaign>();
+          rawCampaigns.forEach(c => cMap.set(c.id, c));
+          cData.forEach(c => cMap.set(c.id, c));
+          rawCampaigns = Array.from(cMap.values());
+        }
+        if (lData) {
+          const lMap = new Map<string, BusinessInfo>();
+          rawLeads.forEach(l => lMap.set(`${l.id}_${l.campaignId}`, l));
+          lData.forEach(l => lMap.set(`${l.id}_${l.campaignId}`, l));
+          rawLeads = Array.from(lMap.values());
+        }
 
         // MERGE DUPLICATES: Ensure only 1 campaign per niche
         const nicheMap = new Map<string, Campaign>();
@@ -206,9 +218,10 @@ const App: React.FC = () => {
           if (result.sources) allSources.push(...result.sources);
 
           result.businesses.forEach(biz => {
+            const bizPhone = normalize(biz.phone);
             const exists = currentLeadsState.some(l =>
               (l.id === biz.id && l.campaignId === targetCampaignId) ||
-              (normalize(l.phone) === normalize(biz.phone))
+              (bizPhone !== '' && normalize(l.phone) === bizPhone)
             );
             if (!exists) {
               const leadData = { ...biz, campaignId: targetCampaignId, lastSeenAt: new Date().toISOString() };
