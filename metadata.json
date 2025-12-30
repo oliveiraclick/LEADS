@@ -1,0 +1,7 @@
+{
+  "name": "LocalBiz Finder & WhatsApp Lead Gen",
+  "description": "Uma ferramenta avançada para localizar empresas por nicho e cidade, extraindo nomes e contatos de WhatsApp através da tecnologia de busca e grounding do Google Maps.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

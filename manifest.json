@@ -1,0 +1,24 @@
+
+{
+  "name": "LeadPro Hub - Mineração de Leads",
+  "short_name": "LeadPro",
+  "description": "Ferramenta avançada de prospecção e mineração de leads via Google Maps.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#4F46E5",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/5968/5968841.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/5968/5968841.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
